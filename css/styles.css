@@ -1,7 +1,7 @@
 /* ---------- Design tokens ---------- */
 :root {
   --card-pad-x: 40px;
-  --bg: #F3F2EF;
+  --bg: #15180E;
   --surface: #FFFFFF;
   --surface-muted: #F7F6F3;
   --text: #191919;
@@ -59,20 +59,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Backdrop: a soft dot grid on cream, like an engineering notebook. Dots only
-   (no major lines) so it stays quiet behind the cards. It sits on a fixed
-   layer so it costs nothing while scrolling, and fades out toward the edges. */
+/* Backdrop: a fixed, full-bleed photo with a soft dark scrim so the cards and
+   the "Projects" heading stay readable. The layer is position:fixed (rather
+   than background-attachment:fixed, which iOS ignores), so the photo stays
+   perfectly still while the cards and text scroll over it. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(circle, var(--grid-dot) 0.9px, transparent 1.3px);
-  background-size: var(--grid) var(--grid);
-  background-position: calc(var(--grid) / -2) calc(var(--grid) / -2);
-  -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
-          mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
+  background-image:
+    linear-gradient(rgba(10, 12, 8, 0.42), rgba(10, 12, 8, 0.42)),
+    url("../assets/background.jpg?v=1");
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Custom cursor: rounded black arrow with a white rim (assets/cursor/ — source drawing in tools/cursor.svg).
@@ -234,6 +236,8 @@ img { display: block; max-width: 100%; }
   font-size: clamp(32px, 4.5vw, 44px);
   font-weight: 800;
   letter-spacing: -0.03em;
+  color: #F6F5F0;
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.4);
 }
 
 .project {
@@ -667,7 +671,7 @@ html.dialog-open { overflow: hidden; }
   max-width: var(--page-width);
   margin: 0 auto;
   padding: 32px var(--gutter) 56px;
-  color: var(--text-tertiary);
+  color: rgba(243, 241, 236, 0.6);
   font-size: 14px;
 }
 

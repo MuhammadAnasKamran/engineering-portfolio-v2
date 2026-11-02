@@ -79,7 +79,7 @@
   const email = `${profile.email.user}@${profile.email.domain}`;
   document.getElementById("intro").innerHTML = `
     <div>
-      <h1 class="intro__name">${esc(profile.name)}</h1>
+      <h2 class="intro__name">${esc(profile.name)}</h2>
     </div>
     <div class="intro__edu">
       ${logoHTML(profile.logo, "lg")}
@@ -629,4 +629,54 @@
       ticking = false;
     });
   }, { passive: true });
+
+  /* ---------- Cover: parallax fade + scroll-to-portfolio ---------- */
+  // The dark cover word drifts up and fades as you scroll past the first
+  // viewport, and the "Scroll" cue glides down to the intro. Both are skipped
+  // for visitors who prefer reduced motion.
+  const coverReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const heroTitle = document.querySelector(".hero__title");
+  if (heroTitle) {
+    if (!coverReduce) {
+      let coverTick = false;
+      const updateCover = () => {
+        coverTick = false;
+        const p = Math.min(1, window.scrollY / window.innerHeight);
+        heroTitle.style.transform = `translateY(${(-p * 90).toFixed(1)}px)`;
+        heroTitle.style.opacity = Math.max(0, 1 - p * 1.15).toFixed(3);
+      };
+      window.addEventListener("scroll", () => {
+        if (!coverTick) { coverTick = true; requestAnimationFrame(updateCover); }
+      }, { passive: true });
+      window.addEventListener("resize", updateCover, { passive: true });
+      updateCover();
+    }
+
+    const heroScroll = document.querySelector(".hero__scroll");
+    if (heroScroll) {
+      heroScroll.addEventListener("click", (e) => {
+        const target = document.getElementById("intro");
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: coverReduce ? "auto" : "smooth", block: "start" });
+      });
+    }
+  }
+
+  /* ---------- Backdrop: clouds recede on scroll (subtle parallax) ---------- */
+  // The clouds sit on the full-document world layer behind the page. A small
+  // upward lag makes them drift slower than the content as you scroll, giving
+  // depth. Skipped for visitors who prefer reduced motion.
+  const clouds = document.querySelector(".world__clouds");
+  if (clouds && !coverReduce) {
+    let cloudTick = false;
+    const updateClouds = () => {
+      cloudTick = false;
+      clouds.style.transform = `translate3d(0, ${(window.scrollY * 0.25).toFixed(1)}px, 0)`;
+    };
+    window.addEventListener("scroll", () => {
+      if (!cloudTick) { cloudTick = true; requestAnimationFrame(updateClouds); }
+    }, { passive: true });
+    updateClouds();
+  }
 })();

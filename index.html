@@ -29,14 +29,34 @@
   <meta property="og:image:alt" content="Muhammad Anas Kamran, BEng (Hons) Electrical Engineering, PolyU, holding a custom control board">
   <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="stylesheet" href="css/styles.css?v=40">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="css/styles.css?v=43">
 </head>
 <body>
+  <div class="world" aria-hidden="true">
+    <div class="world__clouds">
+      <span class="cloud cloud--a"></span>
+      <span class="cloud cloud--b"></span>
+      <span class="cloud cloud--c"></span>
+      <span class="cloud cloud--d"></span>
+      <span class="cloud cloud--e"></span>
+    </div>
+    <div class="world__grain"></div>
+  </div>
+
+  <header class="hero" id="top">
+    <h1 class="hero__title" aria-label="PORTFOLIO"><span class="hero__letter" aria-hidden="true">P</span><span class="hero__letter" aria-hidden="true">O</span><span class="hero__letter" aria-hidden="true">R</span><span class="hero__letter" aria-hidden="true">T</span><span class="hero__letter" aria-hidden="true">F</span><span class="hero__letter" aria-hidden="true">O</span><span class="hero__letter" aria-hidden="true">L</span><span class="hero__letter" aria-hidden="true">I</span><span class="hero__letter" aria-hidden="true">O</span></h1>
+    <a class="hero__scroll" href="#intro">
+      <span class="hero__scroll-label">Scroll</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  </header>
+
   <main class="page">
     <section class="intro reveal" id="intro" aria-label="Introduction">
       <!-- Shown only if JavaScript is blocked; replaced by the full intro otherwise -->
       <noscript>
-        <h1 class="intro__name">Muhammad Anas Kamran</h1>
+        <h2 class="intro__name">Muhammad Anas Kamran</h2>
         <p class="intro__headline">BEng (Hons) Electrical Engineering · The Hong Kong Polytechnic University</p>
         <p class="intro__headline">This portfolio needs JavaScript to show its projects. You can still reach me on
           <a href="https://www.linkedin.com/in/muhammad-anas-kamran" rel="noopener noreferrer">LinkedIn</a>.</p>
@@ -55,7 +75,16 @@
     <p id="footer-text"></p>
   </footer>
 
+  <div class="grass" aria-hidden="true">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 128 Q 170 66 340 104 T 700 96 T 1060 98 T 1440 80 V 200 H 0 Z" fill="#6B8F4E"/>
+      <path d="M0 152 Q 180 92 360 132 T 720 122 T 1080 128 T 1440 108 V 200 H 0 Z" fill="#4A6B38"/>
+      <path d="M0 174 Q 200 124 400 158 T 800 152 T 1200 152 T 1440 138 V 200 H 0 Z" fill="#38552C"/>
+      <path d="M0 190 Q 220 160 440 182 T 880 180 T 1320 182 T 1440 172 V 200 H 0 Z" fill="#27401F"/>
+    </svg>
+  </div>
+
   <script src="content.js?v=40"></script>
-  <script src="js/main.js?v=40"></script>
+  <script src="js/main.js?v=42"></script>
 </body>
 </html>

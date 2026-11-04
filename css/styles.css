@@ -1,14 +1,3 @@
-/* ---------- Display face (self-hosted) ---------- */
-/* Anton: a tall, ultra-bold condensed sans for the cover word. Self-hosted
-   (not a Google Fonts <link>) so the strict CSP (font-src 'self') stays closed. */
-@font-face {
-  font-family: "Anton";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("../assets/fonts/anton-latin.woff2") format("woff2");
-}
-
 /* ---------- Design tokens ---------- */
 :root {
   --card-pad-x: 40px;
@@ -61,9 +50,7 @@ html {
 
 body {
   margin: 0;
-  position: relative;    /* containing block for the full-document .world layer */
-  min-height: 100vh;     /* keep the scene full-height even if content is short */
-  background: #7BC3E8;   /* overscroll fallback behind .world */
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font);
   font-size: 16px;
@@ -72,83 +59,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Backdrop: a continuous "world" layer that spans the whole document height
-   (not a fixed 100vh split). Its gradient is anchored to the top of the page
-   (sky) and the bottom (ground), so scrolling walks down from the clouds into
-   the grass. Absolutely positioned behind all content, it never repaints on
-   scroll. */
-.world {
-  position: absolute;
+/* Backdrop: a soft dot grid on cream, like an engineering notebook. Dots only
+   (no major lines) so it stays quiet behind the cards. It sits on a fixed
+   layer so it costs nothing while scrolling, and fades out toward the edges. */
+body::before {
+  content: "";
+  position: fixed;
   inset: 0;
   z-index: -1;
-  overflow: hidden;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    #7BC3E8 0%,      /* crisp morning sky */
-    #9FD6EC 10%,
-    #C5E5E4 24%,     /* hazy atmosphere */
-    #E7EAD6 38%,     /* warm horizon glow */
-    #D9E3BE 52%,
-    #B5CE93 66%,     /* pale grass */
-    #8DB471 80%,     /* meadow */
-    #60904C 91%,
-    #4C7A3E 100%     /* rich earthy ground */
-  );
-}
-
-/* Clouds live on a layer of their own so a tiny scroll parallax (main.js) can
-   move them slower than the page — they recede as you scroll down. */
-.world__clouds {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
-}
-
-/* A soft film of fractal noise gives the scene a painterly, papery grain instead
-   of flat gradient banding. Self-hosted (not a data URI) so the strict CSP
-   (img-src 'self') stays satisfied. */
-.world__grain {
-  position: absolute;
-  inset: 0;
-  background-image: url("../assets/noise.svg");
-  background-size: 160px 160px;
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-}
-
-/* Soft, semi-transparent clouds drifting near the top of the sky. */
-.cloud {
-  position: absolute;
-  width: 200px;
-  height: 56px;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 999px;
-  opacity: 0.9;
-  filter: blur(1px);
-  animation: cloud-drift 26s ease-in-out infinite alternate;
-  will-change: transform;
-}
-.cloud::before,
-.cloud::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  background: inherit;
-  border-radius: 50%;
-}
-.cloud::before { left: 15%; width: 45%; height: 170%; }
-.cloud::after  { right: 12%; width: 55%; height: 210%; }
-
-.cloud--a { top: 3%;  left: -6%; animation-duration: 30s; }
-.cloud--b { top: 8%;  right: -5%; width: 150px; height: 42px; opacity: 0.7; animation-duration: 36s; }
-.cloud--c { top: 1%;  left: 30%; width: 100px; height: 30px; opacity: 0.6; animation-duration: 24s; }
-.cloud--d { top: 11%; left: 55%; width: 250px; height: 68px; opacity: 0.8; animation-duration: 42s; }
-.cloud--e { top: 15%; left: 8%;  width: 320px; height: 84px; opacity: 0.5; animation-duration: 50s; }
-
-@keyframes cloud-drift {
-  from { transform: translateX(0); }
-  to   { transform: translateX(70px); }
+  background-image: radial-gradient(circle, var(--grid-dot) 0.9px, transparent 1.3px);
+  background-size: var(--grid) var(--grid);
+  background-position: calc(var(--grid) / -2) calc(var(--grid) / -2);
+  -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
+          mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
 }
 
 /* Custom cursor: rounded black arrow with a white rim (assets/cursor/ — source drawing in tools/cursor.svg).
@@ -204,128 +128,6 @@ img { display: block; max-width: 100%; }
 }
 
 .squircle { border-radius: var(--radius); }
-
-
-/* ---------- Cover (first page) ---------- */
-/* A full-viewport landing that shares the page's sky → grass background, which
-   you scroll past to reach the portfolio. "PORTFOLIO" is set in a tall,
-   ultra-bold condensed face (Anton), each letter nudged off its baseline,
-   tilted a few degrees and spaced unevenly so the line reads like a hand-cut
-   block print of cream paper cut-outs floating on the sky. */
-
-.hero {
-  position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  padding: 40px var(--gutter) 120px;
-  overflow: hidden;                  /* rotated letters never poke past the viewport */
-}
-
-/* No panel of its own: the cover sits directly on the shared sky background,
-   so the cream word floats among the clouds. */
-
-/* The cover word. Each letter is an inline-block span written adjacent in the
-   HTML (no whitespace), so the per-letter rules below can offset it freely. */
-.hero__title {
-  margin: 0;
-  font-family: "Anton", var(--font);
-  font-weight: 400;
-  font-size: clamp(48px, 15.5vw, 190px);
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #F4EEE0;
-}
-
-.hero__letter {
-  display: inline-block;
-  margin-right: var(--dx, 0.02em);
-  transform: translateY(var(--dy, 0em)) rotate(var(--rot, 0deg));
-  clip-path: var(--clip, none);
-  /* A thin dark edge keeps the cream letters legible on the light sky, and a
-     soft shadow lifts them off it like die-cut paper. */
-  -webkit-text-stroke: 2px rgba(20, 32, 20, 0.7);
-  text-shadow: 0 5px 18px rgba(18, 36, 18, 0.4);
-  will-change: transform;
-}
-
-/* Hand-tuned per-letter offset, tilt and spacing — an organic, uneven baseline.
-   A couple of corners are shaved with clip-path for a raw, hand-cut edge. */
-.hero__letter:nth-child(1) { --rot: -3deg;   --dy: 0.05em;  --dx: 0.02em;  --clip: polygon(0 3%, 100% 0, 98% 100%, 0 97%); }
-.hero__letter:nth-child(2) { --rot: 2.5deg;  --dy: -0.06em; --dx: -0.015em; --clip: polygon(2% 0, 100% 3%, 100% 98%, 0 100%); }
-.hero__letter:nth-child(3) { --rot: -2deg;   --dy: 0.04em;  --dx: 0.03em;  --clip: polygon(0 0, 98% 3%, 100% 97%, 2% 100%); }
-.hero__letter:nth-child(4) { --rot: 3deg;    --dy: -0.03em; --dx: 0;       --clip: polygon(1% 2%, 99% 0, 100% 100%, 0 98%); }
-.hero__letter:nth-child(5) { --rot: -4deg;   --dy: 0.06em;  --dx: 0.015em; --clip: polygon(0 0, 100% 2%, 97% 100%, 1% 99%); }
-.hero__letter:nth-child(6) { --rot: 1.5deg;  --dy: -0.07em; --dx: 0;       --clip: polygon(2% 1%, 100% 0, 98% 99%, 0 98%); }
-.hero__letter:nth-child(7) { --rot: -2.5deg; --dy: 0.03em;  --dx: 0.03em;  --clip: polygon(0 3%, 100% 0, 100% 97%, 2% 100%); }
-.hero__letter:nth-child(8) { --rot: 3.5deg;  --dy: -0.02em; --dx: 0;       --clip: polygon(0 0, 99% 3%, 100% 98%, 1% 100%); }
-.hero__letter:nth-child(9) { --rot: -3deg;   --dy: 0.05em;  --dx: 0;       --clip: polygon(1% 0, 100% 2%, 99% 100%, 0 98%); }
-
-/* Letters settle in one by one on load (main.js adds the .js class, so without
-   JavaScript they stay fully visible). */
-.js .hero__letter {
-  opacity: 0;
-  animation: hero-letter-in 700ms var(--ease-premium) forwards;
-}
-@keyframes hero-letter-in { to { opacity: 1; } }
-.js .hero__letter:nth-child(1) { animation-delay: 60ms; }
-.js .hero__letter:nth-child(2) { animation-delay: 120ms; }
-.js .hero__letter:nth-child(3) { animation-delay: 180ms; }
-.js .hero__letter:nth-child(4) { animation-delay: 240ms; }
-.js .hero__letter:nth-child(5) { animation-delay: 300ms; }
-.js .hero__letter:nth-child(6) { animation-delay: 360ms; }
-.js .hero__letter:nth-child(7) { animation-delay: 420ms; }
-.js .hero__letter:nth-child(8) { animation-delay: 480ms; }
-.js .hero__letter:nth-child(9) { animation-delay: 540ms; }
-
-/* Scroll cue */
-.hero__scroll {
-  position: absolute;
-  left: 50%;
-  bottom: 40px;
-  transform: translateX(-50%);
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  color: rgba(25, 25, 25, 0.55);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: color 200ms ease;
-}
-.hero__scroll:hover { color: #191919; }
-.hero__scroll:focus-visible { outline: 2px solid #191919; outline-offset: 6px; border-radius: 4px; }
-.js .hero__scroll { opacity: 0; animation: hero-letter-in 800ms var(--ease-premium) 700ms forwards; }
-.hero__scroll-line {
-  position: relative;
-  width: 1px;
-  height: 46px;
-  overflow: hidden;
-  background: rgba(25, 25, 25, 0.16);
-}
-/* a small dark bead slides down the line, hinting at the scroll direction */
-.hero__scroll-line::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 40%;
-  background: #191919;
-  animation: hero-scroll-cue 2.4s var(--ease-premium) infinite;
-}
-@keyframes hero-scroll-cue {
-  0%   { transform: translateY(-120%); }
-  55%  { transform: translateY(320%); }
-  100% { transform: translateY(320%); }
-}
 
 
 /* ---------- Logo placeholders ---------- */
@@ -432,8 +234,6 @@ img { display: block; max-width: 100%; }
   font-size: clamp(32px, 4.5vw, 44px);
   font-weight: 800;
   letter-spacing: -0.03em;
-  /* light halo keeps the dark heading readable over the deeper greens */
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 28px rgba(255, 255, 255, 0.3);
 }
 
 .project {
@@ -867,21 +667,8 @@ html.dialog-open { overflow: hidden; }
   max-width: var(--page-width);
   margin: 0 auto;
   padding: 32px var(--gutter) 56px;
-  color: rgba(255, 255, 255, 0.85);   /* light, to stay readable on the grassy ground */
+  color: var(--text-tertiary);
   font-size: 14px;
-}
-
-/* Layered grass silhouette at the very bottom, blending into the gradient. */
-.grass {
-  position: relative;
-  margin-top: -56px;
-  line-height: 0;
-  pointer-events: none;
-}
-.grass svg {
-  display: block;
-  width: 100%;
-  height: clamp(120px, 16vw, 200px);
 }
 
 /* ---------- Scroll reveal ---------- */
@@ -931,10 +718,6 @@ html.dialog-open { overflow: hidden; }
   .project__card.is-open .details,
   .project__card.is-open .details__inner { transition: none; }
   .video-dialog[open] { animation: none; }
-  .js .hero__letter,
-  .js .hero__scroll { opacity: 1; animation: none; }
-  .hero__scroll-line::after { animation: none; }
-  .cloud { animation: none; }
 }
 
 /* ---------- Responsive ---------- */
@@ -1005,8 +788,7 @@ html.dialog-open { overflow: hidden; }
 /* Everything visible and expanded: no fade-in states, all "Read more"
    sections open, no interactive chrome. */
 @media print {
-  .world, .grass { display: none; }
-  .hero { display: none; }
+  body::before { display: none; }
   .js .reveal,
   .js .project.reveal .project__media,
   .js .project.reveal .project__card { opacity: 1 !important; transform: none !important; }
